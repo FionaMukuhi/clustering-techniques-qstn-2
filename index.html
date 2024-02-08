@@ -7,28 +7,32 @@
 <body>
     <h1>Article Clusters</h1>
     <div id="clusters">
-        <!-- Clusters will be inserted here -->
     </div>
     <script>
-        // Optionally, you can load and display the clusters dynamically using JavaScript
-        fetch('./clustered_articles.json')
+        // Load and display the clusters dynamically using JavaScript
+        fetch('./clustered_articles_with_urls.json')
             .then(response => response.json())
             .then(data => {
                 const container = document.getElementById('clusters');
-                Object.entries(data).forEach(([cluster, articles], index) => {
+                Object.entries(data).forEach(([clusterLabel, articles], index) => {
                     const clusterDiv = document.createElement('div');
                     clusterDiv.classList.add('cluster');
-                    clusterDiv.innerHTML = `<h2>Cluster ${index + 1}</h2>`;
+                    clusterDiv.innerHTML = `<h2>Cluster ${parseInt(clusterLabel) + 1}</h2>`;
                     const list = document.createElement('ul');
                     articles.forEach(article => {
                         const listItem = document.createElement('li');
-                        listItem.textContent = article;
+                        const articleLink = document.createElement('a');
+                        articleLink.href = article.url; 
+                        articleLink.textContent = article.article;
+                        articleLink.target = "_blank";
+                        listItem.appendChild(articleLink);
                         list.appendChild(listItem);
                     });
                     clusterDiv.appendChild(list);
                     container.appendChild(clusterDiv);
                 });
-            });
+            })
+            .catch(error => console.error("Fetching clustered articles failed:", error));
     </script>
 </body>
 </html>
